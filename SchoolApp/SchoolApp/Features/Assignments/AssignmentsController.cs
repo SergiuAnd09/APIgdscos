@@ -73,6 +73,57 @@ public class AssignmentsController
             DeadLine = assignment.DeadLine
         };
     }
+
+
+    //[HttpDelete]
+    
+    [HttpDelete("{id}")]
+    public AssignmentResponse Delete([FromRoute] string id)
+    {
+        var assignment = _mockDb.FirstOrDefault(x => x.Id == id);
+
+        if (assignment is null)
+        {
+            return null;
+        }
+
+        _mockDb.Remove(assignment);
+        
+        return new AssignmentResponse
+        {
+            Id = assignment.Id,
+            Subject = assignment.Subject,
+            Description = assignment.Description,
+            DeadLine = assignment.DeadLine
+        };
+    }
+
+    //[HttpPatch]
+    
+    [HttpPatch("{id}")]
+    public AssignmentResponse Patch([FromRoute] string id,[FromBody] AssignmentRequest _new)
+    {
+        var assignment = _mockDb.FirstOrDefault(x => x.Id == id);
+
+        if (assignment is null)
+        {
+            return null;
+        }
+
+        int index = _mockDb.IndexOf(assignment);
+        _mockDb[index].Subject = _new.Subject;
+        _mockDb[index].Description = _new.Description;
+        _mockDb[index].DeadLine = _new.Deadline;
+        _mockDb[index].Updated=DateTime.UtcNow;
+
+        return new AssignmentResponse
+        {
+            Id=id,
+            Subject = _new.Subject,
+            Description = _new.Description,
+            DeadLine = _new.Deadline
+        };
+    }
 }
 
 //tema e sa facem o functie de delete si update, nu punem routeuri, [HttpDelete] si [HttpPatch]
